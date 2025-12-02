@@ -4,11 +4,9 @@ import './SecondaryStructures.css';
 
 const SecondaryStructure = ({
   familyAcc,
-  familyId,
   imageTypes = ['rscape', 'seqcons', 'norm', 'cov','ent','maxcm','bpcons','rchie'],
   apiBaseUrl = 'rfam',  
   varnaEnabled = true,
-  showImageInfo = true,
 }) => {
   const [selectedImageType, setSelectedImageType] = useState(imageTypes[0] || 'rscape');
   const [svgContent, setSvgContent] = useState('');
@@ -27,12 +25,10 @@ const SecondaryStructure = ({
   const checkImageAvailability = useCallback(async (type) => {
     try {
       const url = buildImageUrl(type);
-      console.log('Checking availability:', url);  // Debug log
       const response = await fetch(url, { 
         method: 'HEAD',
         mode: 'cors'
       });
-      console.info(`Response obj: ${JSON.stringify(response)}`);  // Debug log
       return response.ok;
     } catch (error) {
       console.warn(`Availability check failed for ${type}:`, error);
@@ -42,7 +38,6 @@ const SecondaryStructure = ({
 
   const loadImage = useCallback(async (type) => {
     const url = buildImageUrl(type);
-    console.log('Loading image from:', url);  // Debug log
     
     try {
       const response = await fetch(url, { mode: 'cors' });
@@ -87,8 +82,7 @@ const SecondaryStructure = ({
   useEffect(() => {
     const initializeImages = async () => {
 
-      // Assign available type to a copy of imageTypes
-      const available = Array.from(imageTypes)
+      const available = []
       
       for (const type of imageTypes) {
         const isAvailable = await checkImageAvailability(type);
@@ -230,7 +224,6 @@ const SecondaryStructure = ({
 
 SecondaryStructure.propTypes = {
   familyAcc: PropTypes.string.isRequired,
-  familyId: PropTypes.string,
   imageTypes: PropTypes.arrayOf(PropTypes.string),
   apiBaseUrl: PropTypes.string,
   varnaEnabled: PropTypes.bool,
