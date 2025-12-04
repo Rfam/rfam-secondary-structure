@@ -14,7 +14,7 @@ function App() {
         <SecondaryStructure
           familyAcc={selectedFamily.acc}
           familyId={selectedFamily.id}
-          imageTypes={['rscape', 'seqcons', 'norm', 'cov','ent','maxcm','bpcons','rchie']}
+          imageTypes={['rscape', 'cons', 'norm', 'cov','ent','maxcm','fcbp','rchie']}
           apiBaseUrl="http://localhost:3000/family"
           varnaEnabled={true}
           showImageInfo={true}

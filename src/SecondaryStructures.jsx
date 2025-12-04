@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import './SecondaryStructures.css';
 
 const SecondaryStructure = ({
   familyAcc,
-  imageTypes = ['rscape', 'seqcons', 'norm', 'cov','ent','maxcm','bpcons','rchie'],
+  imageTypes = ['rscape', 'cons', 'norm', 'cov','ent','maxcm','fcbp','rchie','rscape-cyk'],
   apiBaseUrl = 'rfam',  
   varnaEnabled = true,
 }) => {
@@ -47,9 +47,12 @@ const SecondaryStructure = ({
       }
 
       const content = await response.text();
+      const contentType = response.headers.get('content-type') || '';
+
+      // If image is not available, Rfam returns a 'not availbele' PNG image
       
       // Verify that it's actually SVG content
-      if (!content.includes('<svg')) {
+      if (!content.includes('<svg') && !contentType.includes('image/png')) {
         throw new Error('Response does not contain SVG');
       }
 
@@ -131,11 +134,11 @@ const SecondaryStructure = ({
   const downloadImage = useCallback(() => {
     if (!svgContent) return;
     
-    const blob = new Blob([svgContent], { type: 'image/svg+xml' });
+    const blob = svgContent.includes('<svg') ? new Blob([svgContent], { type: 'image/svg+xml' }) : new Blob([svgContent], { type: 'image/png' })
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `${familyAcc}_${selectedImageType}_structure.svg`;
+    link.download = svgContent.includes('<svg') ? `${familyAcc}_${selectedImageType}_structure.svg` : null
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -145,8 +148,8 @@ const SecondaryStructure = ({
   const getImageTypeLabel = (type) => {
     const labels = {
       rscape: 'R-scape',
-      seqcons: 'seq cons',
-      bpcons: 'bp cons',
+      cons: 'cons',
+      fcbp: 'bpcons',
       cov: 'cov',
       ent: 'ent',
       maxcm: 'maxcm',
@@ -205,6 +208,17 @@ const SecondaryStructure = ({
             <p>{errorMessage}</p>
           </div>
         )}
+
+        {
+          imageStatus === 'loaded' && svgContent && !svgContent.includes('<svg') && (
+            <div className="ss-image-container">  
+                <div 
+                  className="ss-svg-wrapper"
+                  dangerouslySetInnerHTML={{ __html: svgContent }}
+                />
+            </div>
+          )
+        }
 
         {imageStatus === 'loaded' && svgContent && (
           <div className="ss-image-container">
