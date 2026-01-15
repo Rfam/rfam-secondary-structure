@@ -14,12 +14,13 @@ export default defineConfig(({ mode }) => {
           fileName: () => 'secondary-structures.umd.js'
         },
         rollupOptions: {
-          external: ['react', 'react-dom', 'prop-types'],
+          external: ['react', 'react-dom', 'prop-types', 'svg-pan-zoom'],
           output: {
             globals: {
               react: 'React',
               'react-dom': 'ReactDOM',
-              'prop-types': 'PropTypes'
+              'prop-types': 'PropTypes',
+              'svg-pan-zoom': 'svgPanZoom'
             }
           }
         }

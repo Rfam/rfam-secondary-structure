@@ -13,11 +13,11 @@ function App() {
       <div className="app-content">
         <SecondaryStructure
           familyAcc={selectedFamily.acc}
-          familyId={selectedFamily.id}
-          imageTypes={['rscape', 'cons', 'norm', 'cov','ent','maxcm','fcbp','rchie']}
-          apiBaseUrl="http://localhost:3000/family"
+          imageTypes={['rscape', 'cons', 'fcbp', 'cov', 'ent', 'maxcm', 'norm', 'rchie']}
+          apiBaseUrl="https://rfam.org/family"
           varnaEnabled={true}
-          showImageInfo={true}
+          showLegend={true}
+          showDescription={true}
         />
       </div>
     </div>
