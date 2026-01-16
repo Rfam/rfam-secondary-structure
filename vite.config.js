@@ -3,6 +3,32 @@ import react from '@vitejs/plugin-react';
 import path from 'path';
 
 export default defineConfig(({ mode }) => {
+  // Standalone build - bundles everything for embedding in non-React apps
+  if (mode === 'standalone') {
+    return {
+      plugins: [react()],
+      define: {
+        'process.env.NODE_ENV': JSON.stringify('production')
+      },
+      build: {
+        lib: {
+          entry: path.resolve(__dirname, 'src/standalone.jsx'),
+          name: 'RfamSecondaryStructures',
+          formats: ['iife'],
+          fileName: () => 'secondary-structures.min.js'
+        },
+        cssCodeSplit: false,
+        outDir: 'dist/standalone',
+        rollupOptions: {
+          output: {
+            assetFileNames: 'secondary-structures.[ext]'
+          }
+        }
+      }
+    };
+  }
+
+  // Library build - for use in React apps (externalize React)
   if (mode === 'library') {
     return {
       plugins: [react()],
@@ -27,6 +53,8 @@ export default defineConfig(({ mode }) => {
       }
     };
   }
+
+  // Development mode
   return {
     plugins: [react()],
     server: { port: 3001 }

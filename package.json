@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "build:lib": "vite build --mode library"
+    "build:lib": "vite build --mode library",
+    "build:standalone": "vite build --mode standalone"
   },
   "dependencies": {
     "react": "^18.2.0",
