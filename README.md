@@ -31,8 +31,8 @@ For non-React applications, use the standalone build which bundles all dependenc
 **CDN Links (Production):**
 
 ```html
-<link rel="stylesheet" href="https://rfam.github.io/rfam-secondary-structure/secondary-structures.css">
-<script src="https://rfam.github.io/rfam-secondary-structure/secondary-structures.min.js"></script>
+<link rel="stylesheet" href="https://rfam.github.io/rfam-secondary-structure/secondary-structures.css?v=2">
+<script src="https://rfam.github.io/rfam-secondary-structure/secondary-structures.min.js?v=2"></script>
 ```
 
 #### Auto-Mount Usage
@@ -50,8 +50,8 @@ Add a container element with `data-rfam-ss` attribute and configuration via data
   data-show-description="true">
 </div>
 
-<link rel="stylesheet" href="https://rfam.github.io/rfam-secondary-structure/secondary-structures.css">
-<script src="https://rfam.github.io/rfam-secondary-structure/secondary-structures.min.js"></script>
+<link rel="stylesheet" href="https://rfam.github.io/rfam-secondary-structure/secondary-structures.css?v=2">
+<script src="https://rfam.github.io/rfam-secondary-structure/secondary-structures.min.js?v=2"></script>
 ```
 
 The component will automatically initialize when the DOM is ready.
@@ -63,8 +63,8 @@ For programmatic control, use the global `RfamSecondaryStructures` object:
 ```html
 <div id="ss-container"></div>
 
-<link rel="stylesheet" href="https://rfam.github.io/rfam-secondary-structure/secondary-structures.css">
-<script src="https://rfam.github.io/rfam-secondary-structure/secondary-structures.min.js"></script>
+<link rel="stylesheet" href="https://rfam.github.io/rfam-secondary-structure/secondary-structures.css?v=2">
+<script src="https://rfam.github.io/rfam-secondary-structure/secondary-structures.min.js?v=2"></script>
 
 <script>
   const container = document.getElementById('ss-container');
