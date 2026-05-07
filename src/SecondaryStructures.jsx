@@ -403,27 +403,40 @@ const SecondaryStructure = ({
     }
   }, [selectedImageType, imageStatus, loadRscapeCyk]);
 
-  // Process main R-scape SVG after content loads
+  // Process main R-scape SVG after content loads (no timeout — DOM is committed before effects run)
   useEffect(() => {
     if (imageStatus === 'loaded' && svgContent && svgContent.includes('<svg') && selectedImageType === 'rscape') {
+      processRscapeSvg(svgContainerRef, setRscapeStats);
+    }
+  }, [imageStatus, svgContent, selectedImageType, processRscapeSvg]);
+
+  // Initialize pan/zoom after rscapeStats are set so the stats paragraph is already rendered
+  // and the container has its final dimensions before svg-pan-zoom calculates the viewport.
+  useEffect(() => {
+    if (rscapeStats && imageStatus === 'loaded' && svgContent && svgContent.includes('<svg') && selectedImageType === 'rscape') {
       const timer = setTimeout(() => {
-        processRscapeSvg(svgContainerRef, setRscapeStats);
         initializePanZoom(svgContainerRef, panZoomInstanceRef);
-      }, 100);
+      }, 50);
       return () => clearTimeout(timer);
     }
-  }, [imageStatus, svgContent, selectedImageType, processRscapeSvg, initializePanZoom]);
+  }, [rscapeStats, imageStatus, svgContent, selectedImageType, initializePanZoom]);
 
   // Process R-scape CYK SVG after content loads
   useEffect(() => {
     if (rscapeCykStatus === 'loaded' && rscapeCykContent && rscapeCykContent.includes('<svg')) {
+      processRscapeSvg(svgContainerCykRef, setRscapeCykStats);
+    }
+  }, [rscapeCykStatus, rscapeCykContent, processRscapeSvg]);
+
+  // Initialize CYK pan/zoom after rscapeCykStats are set
+  useEffect(() => {
+    if (rscapeCykStats && rscapeCykStatus === 'loaded' && rscapeCykContent && rscapeCykContent.includes('<svg')) {
       const timer = setTimeout(() => {
-        processRscapeSvg(svgContainerCykRef, setRscapeCykStats);
         initializePanZoom(svgContainerCykRef, panZoomCykInstanceRef);
-      }, 100);
+      }, 50);
       return () => clearTimeout(timer);
     }
-  }, [rscapeCykStatus, rscapeCykContent, processRscapeSvg, initializePanZoom]);
+  }, [rscapeCykStats, rscapeCykStatus, rscapeCykContent, initializePanZoom]);
 
   // Reset toggle state when image type changes
   useEffect(() => {
@@ -578,6 +591,7 @@ const SecondaryStructure = ({
                 </p>
               )}
               <div
+                key="rscape-main-svg"
                 ref={svgContainerRef}
                 className="ss-rscape-container"
                 onMouseMove={handleSvgMouseMove}
@@ -610,6 +624,7 @@ const SecondaryStructure = ({
                   </div>
                 ) : rscapeCykContent?.includes('<svg') && (
                   <div
+                    key="rscape-cyk-svg"
                     ref={svgContainerCykRef}
                     className="ss-rscape-container"
                     onMouseMove={handleSvgMouseMove}
