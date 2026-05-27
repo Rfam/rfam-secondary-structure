@@ -408,12 +408,16 @@ const SecondaryStructure = ({
 
   // Initialize pan/zoom after rscapeStats are set so the stats paragraph is already rendered
   // and the container has its final dimensions before svg-pan-zoom calculates the viewport.
+  // Double rAF ensures the browser has painted before svg-pan-zoom measures dimensions.
   useEffect(() => {
     if (rscapeStats && imageStatus === 'loaded' && svgContent && svgContent.includes('<svg') && selectedImageType === 'rscape') {
-      const timer = setTimeout(() => {
-        initializePanZoom(svgContainerRef, panZoomInstanceRef);
-      }, 50);
-      return () => clearTimeout(timer);
+      let raf1, raf2;
+      raf1 = requestAnimationFrame(() => {
+        raf2 = requestAnimationFrame(() => {
+          initializePanZoom(svgContainerRef, panZoomInstanceRef);
+        });
+      });
+      return () => { cancelAnimationFrame(raf1); cancelAnimationFrame(raf2); };
     }
   }, [rscapeStats, imageStatus, svgContent, selectedImageType, initializePanZoom]);
 
@@ -427,10 +431,13 @@ const SecondaryStructure = ({
   // Initialize CYK pan/zoom after rscapeCykStats are set
   useEffect(() => {
     if (rscapeCykStats && rscapeCykStatus === 'loaded' && rscapeCykContent && rscapeCykContent.includes('<svg')) {
-      const timer = setTimeout(() => {
-        initializePanZoom(svgContainerCykRef, panZoomCykInstanceRef);
-      }, 50);
-      return () => clearTimeout(timer);
+      let raf1, raf2;
+      raf1 = requestAnimationFrame(() => {
+        raf2 = requestAnimationFrame(() => {
+          initializePanZoom(svgContainerCykRef, panZoomCykInstanceRef);
+        });
+      });
+      return () => { cancelAnimationFrame(raf1); cancelAnimationFrame(raf2); };
     }
   }, [rscapeCykStats, rscapeCykStatus, rscapeCykContent, initializePanZoom]);
 
