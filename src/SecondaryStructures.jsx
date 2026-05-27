@@ -484,21 +484,29 @@ const SecondaryStructure = ({
   const downloadImage = useCallback(() => {
     if (!svgContent) return;
 
+    const triggerDownload = (content, filename, type) => {
+      const blob = new Blob([content], { type });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    };
+
     const isSvg = svgContent.includes('<svg');
-    const blob = isSvg
-      ? new Blob([svgContent], { type: 'image/svg+xml' })
-      : new Blob([svgContent], { type: 'image/png' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = isSvg
-      ? `${familyAcc}_${selectedImageType}_structure.svg`
-      : `${familyAcc}_${selectedImageType}_structure.png`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-  }, [svgContent, familyAcc, selectedImageType]);
+    const ext = isSvg ? 'svg' : 'png';
+    const mimeType = isSvg ? 'image/svg+xml' : 'image/png';
+    triggerDownload(svgContent, `${familyAcc}_${selectedImageType}_structure.${ext}`, mimeType);
+
+    if (selectedImageType === 'rscape' && rscapeCykContent && rscapeCykContent.includes('<svg') && !isRscapeCykNotAvailable) {
+      setTimeout(() => {
+        triggerDownload(rscapeCykContent, `${familyAcc}_rscape-cacofold_structure.svg`, 'image/svg+xml');
+      }, 100);
+    }
+  }, [svgContent, familyAcc, selectedImageType, rscapeCykContent, isRscapeCykNotAvailable]);
 
   const getImageTypeLabel = (type) => {
     return IMAGE_TYPE_INFO[type]?.label || type.toUpperCase();
@@ -532,12 +540,6 @@ const SecondaryStructure = ({
         )}
 
         <div className="ss-actions">
-          {varnaEnabled && (
-            <button onClick={openVarnaViewer} title="Open interactive VARNA viewer" class="vf-button vf-button--secondary">
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginRight: '6px', verticalAlign: 'middle'}}><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-              Launch VARNA Viewer
-            </button>
-          )}
           {imageStatus === 'loaded' && !isImageNotAvailable && (
             <button onClick={downloadImage} title="Download current image" class="vf-button vf-button--secondary">
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginRight: '6px', verticalAlign: 'middle'}}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
