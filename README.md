@@ -16,7 +16,6 @@ function App() {
       familyAcc="RF00001"
       apiBaseUrl="https://rfam.org/family"
       imageTypes={['rscape', 'cons', 'norm']}
-      varnaEnabled={true}
       showLegend={true}
       showDescription={true}
     />
@@ -45,7 +44,6 @@ Add a container element with `data-rfam-ss` attribute and configuration via data
   data-family-acc="RF00001"
   data-api-base-url="https://rfam.org/family"
   data-image-types="rscape,cons,norm"
-  data-varna-enabled="true"
   data-show-legend="true"
   data-show-description="true">
 </div>
@@ -72,7 +70,6 @@ For programmatic control, use the global `RfamSecondaryStructures` object:
     familyAcc: 'RF00001',
     apiBaseUrl: 'https://rfam.org/family',
     imageTypes: ['rscape', 'cons', 'norm'],
-    varnaEnabled: true,
     showLegend: true,
     showDescription: true
   });
@@ -86,7 +83,6 @@ For programmatic control, use the global `RfamSecondaryStructures` object:
 | `familyAcc` | string | *required* | Rfam family accession (e.g., 'RF00001') |
 | `apiBaseUrl` | string | `'rfam'` | Base URL for API calls |
 | `imageTypes` | string[] | `['rscape', 'cons', 'norm', 'cov', 'ent', 'maxcm', 'fcbp', 'rchie']` | Visualization types to display |
-| `varnaEnabled` | boolean | `true` | Show VARNA viewer button |
 | `showLegend` | boolean | `true` | Show visualization legend |
 | `showDescription` | boolean | `true` | Show type descriptions |
 
@@ -118,6 +114,18 @@ npm run build:lib
 # Build standalone (for non-React apps)
 npm run build:standalone
 ```
+
+## Deployment
+
+The demo app is hosted on GitHub Pages at `https://rfam.github.io/rfam-secondary-structure/`.
+
+```bash
+npm run deploy
+```
+
+This builds the standalone bundle and pushes `dist/` to the `gh-pages` branch. GitHub Pages serves from that branch automatically.
+
+> **Note:** Requires `gh-pages` (already in `devDependencies`) and write access to the repository.
 
 ## Build Outputs
 

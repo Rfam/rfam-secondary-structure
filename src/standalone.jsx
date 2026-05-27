@@ -23,7 +23,6 @@ function autoInit() {
     const familyAcc = container.dataset.familyAcc;
     const apiBaseUrl = container.dataset.apiBaseUrl || '/family';
     const imageTypesAttr = container.dataset.imageTypes;
-    const varnaEnabled = container.dataset.varnaEnabled !== 'false';
     const showLegend = container.dataset.showLegend !== 'false';
     const showDescription = container.dataset.showDescription !== 'false';
 
@@ -40,7 +39,6 @@ function autoInit() {
       familyAcc,
       apiBaseUrl,
       imageTypes,
-      varnaEnabled,
       showLegend,
       showDescription,
     });
