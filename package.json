@@ -1,6 +1,6 @@
 {
   "name": "rfam-secondary-structures",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Reusable component for Rfam secondary structures",
   "main": "dist/index.js",
   "scripts": {
