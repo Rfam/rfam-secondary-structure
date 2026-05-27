@@ -15,7 +15,6 @@ function App() {
           familyAcc={selectedFamily.acc}
           imageTypes={['rscape', 'cons', 'fcbp', 'cov', 'ent', 'maxcm', 'norm', 'rchie']}
           apiBaseUrl="https://rfam.org/family"
-          varnaEnabled={true}
           showLegend={true}
           showDescription={true}
         />

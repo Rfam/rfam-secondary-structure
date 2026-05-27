@@ -53,7 +53,6 @@ const SecondaryStructure = ({
   familyAcc,
   imageTypes = ['rscape', 'cons', 'norm', 'cov', 'ent', 'maxcm', 'fcbp', 'rchie'],
   apiBaseUrl = 'rfam',
-  varnaEnabled = true,
   showLegend = true,
   showDescription = true,
 }) => {
@@ -84,9 +83,6 @@ const SecondaryStructure = ({
     return `${apiBaseUrl}/${familyAcc}/image/${type}`;
   }, [apiBaseUrl, familyAcc]);
 
-  const buildVarnaUrl = useCallback(() => {
-    return `${apiBaseUrl}/${familyAcc}/varna`;
-  }, [apiBaseUrl, familyAcc]);
 
   const checkImageAvailability = useCallback(async (type) => {
     try {
@@ -476,10 +472,6 @@ const SecondaryStructure = ({
     }
   }, [selectedImageType, loadImage]);
 
-  const openVarnaViewer = useCallback(() => {
-    const varnaUrl = buildVarnaUrl();
-    window.open(varnaUrl, '_blank', 'width=1200,height=800');
-  }, [buildVarnaUrl]);
 
   const downloadImage = useCallback(() => {
     if (!svgContent) return;
@@ -808,7 +800,6 @@ SecondaryStructure.propTypes = {
   familyAcc: PropTypes.string.isRequired,
   imageTypes: PropTypes.arrayOf(PropTypes.string),
   apiBaseUrl: PropTypes.string,
-  varnaEnabled: PropTypes.bool,
   showLegend: PropTypes.bool,
   showDescription: PropTypes.bool,
 };
