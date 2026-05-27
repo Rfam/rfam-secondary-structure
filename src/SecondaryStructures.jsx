@@ -191,31 +191,36 @@ const SecondaryStructure = ({
     if (width < 400) svgElement.setAttribute('width', 400);
     if (height < 400) svgElement.setAttribute('height', 400);
 
-    try {
-      panZoomRef.current = svgPanZoom(svgElement, {
-        controlIconsEnabled: true,
-        fit: true,
-        center: true,
-        minZoom: 0.5,
-        maxZoom: 10,
-      });
+    const doInit = () => {
+      if (panZoomRef.current) {
+        panZoomRef.current.destroy();
+        panZoomRef.current = null;
+      }
+      try {
+        panZoomRef.current = svgPanZoom(svgElement, {
+          controlIconsEnabled: true,
+          fit: true,
+          center: true,
+          minZoom: 0.5,
+          maxZoom: 10,
+        });
+      } catch (error) {
+        console.warn('Failed to initialize pan/zoom:', error);
+      }
+    };
 
-      // One-shot ResizeObserver: recalculates controls if the container size
-      // settles after init (common in embedded/iframe contexts).
-      if (observerRef && 'ResizeObserver' in window && container) {
-        observerRef.current = new ResizeObserver(() => {
-          if (panZoomRef.current) {
-            panZoomRef.current.resize();
-            panZoomRef.current.fit();
-            panZoomRef.current.center();
-          }
+    if (container.clientWidth > 0) {
+      doInit();
+    } else if (observerRef && 'ResizeObserver' in window) {
+      // Container has no dimensions yet (embedded CSS not settled) — wait for it
+      observerRef.current = new ResizeObserver(() => {
+        if (containerRef.current?.clientWidth > 0) {
           observerRef.current?.disconnect();
           observerRef.current = null;
-        });
-        observerRef.current.observe(container);
-      }
-    } catch (error) {
-      console.warn('Failed to initialize pan/zoom:', error);
+          doInit();
+        }
+      });
+      observerRef.current.observe(container);
     }
   }, []);
 
