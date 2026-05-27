@@ -6,7 +6,7 @@ import './SecondaryStructures.css';
 const IMAGE_TYPE_INFO = {
   rscape: {
     label: 'R-scape',
-    description: 'R-scape is a method for testing whether covariation analysis supports the presence of a conserved RNA secondary structure. This page shows R-scape analysis of the secondary structure from the Rfam seed alignment and a new structure with covariation support that is compatible with the same alignment.',
+    description: 'R-scape is a method for evaluating covariation in multiple sequence alignments while accounting for phylogenetic context. It aims to infer the secondary structure with the highest number of statistically supported covarying base pairs. This page shows the R-scape analysis of two structures: the secondary structure from the Rfam SEED alignment, and a new, R-scape-optimised structure with covariation. The latter can be especially valuable for RNA families with predicted secondary structures or limited experimental structural support.',
   },
   cons: {
     label: 'seqcons',
