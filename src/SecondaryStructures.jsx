@@ -77,6 +77,8 @@ const SecondaryStructure = ({
   const svgContainerCykRef = useRef(null);
   const panZoomInstanceRef = useRef(null);
   const panZoomCykInstanceRef = useRef(null);
+  const resizeObserverRef = useRef(null);
+  const resizeObserverCykRef = useRef(null);
   const rchieImageRef = useRef(null);
 
   const buildImageUrl = useCallback((type) => {
@@ -169,13 +171,18 @@ const SecondaryStructure = ({
   }, [loadImage]);
 
   // Initialize pan/zoom for R-scape images
-  const initializePanZoom = useCallback((containerRef, panZoomRef) => {
+  const initializePanZoom = useCallback((containerRef, panZoomRef, observerRef) => {
     if (panZoomRef.current) {
       panZoomRef.current.destroy();
       panZoomRef.current = null;
     }
+    if (observerRef?.current) {
+      observerRef.current.disconnect();
+      observerRef.current = null;
+    }
 
-    const svgElement = containerRef.current?.querySelector('svg');
+    const container = containerRef.current;
+    const svgElement = container?.querySelector('svg');
     if (!svgElement) return;
 
     // Ensure minimum dimensions
@@ -192,6 +199,21 @@ const SecondaryStructure = ({
         minZoom: 0.5,
         maxZoom: 10,
       });
+
+      // One-shot ResizeObserver: recalculates controls if the container size
+      // settles after init (common in embedded/iframe contexts).
+      if (observerRef && 'ResizeObserver' in window && container) {
+        observerRef.current = new ResizeObserver(() => {
+          if (panZoomRef.current) {
+            panZoomRef.current.resize();
+            panZoomRef.current.fit();
+            panZoomRef.current.center();
+          }
+          observerRef.current?.disconnect();
+          observerRef.current = null;
+        });
+        observerRef.current.observe(container);
+      }
     } catch (error) {
       console.warn('Failed to initialize pan/zoom:', error);
     }
@@ -389,6 +411,8 @@ const SecondaryStructure = ({
         panZoomCykInstanceRef.current.destroy();
         panZoomCykInstanceRef.current = null;
       }
+      resizeObserverRef.current?.disconnect();
+      resizeObserverCykRef.current?.disconnect();
     };
   }, [familyAcc, imageTypes, checkImageAvailability, tryLoadImage]);
 
@@ -414,7 +438,7 @@ const SecondaryStructure = ({
       let raf1, raf2;
       raf1 = requestAnimationFrame(() => {
         raf2 = requestAnimationFrame(() => {
-          initializePanZoom(svgContainerRef, panZoomInstanceRef);
+          initializePanZoom(svgContainerRef, panZoomInstanceRef, resizeObserverRef);
         });
       });
       return () => { cancelAnimationFrame(raf1); cancelAnimationFrame(raf2); };
@@ -434,7 +458,7 @@ const SecondaryStructure = ({
       let raf1, raf2;
       raf1 = requestAnimationFrame(() => {
         raf2 = requestAnimationFrame(() => {
-          initializePanZoom(svgContainerCykRef, panZoomCykInstanceRef);
+          initializePanZoom(svgContainerCykRef, panZoomCykInstanceRef, resizeObserverCykRef);
         });
       });
       return () => { cancelAnimationFrame(raf1); cancelAnimationFrame(raf2); };
